@@ -56,6 +56,6 @@ class BurpExtender(IBurpExtender, IHttpListener, IParameter):
 
 		if needsB64ing:
 			self._stdout.println("Converting from " + minifyFileParam)
-			messageInfo.setRequest(self._helpers.updateParameter(rawRequest, self._helpers.buildParameter("s", base64.encodestring(minifyFileParam), self.PARAM_URL)))
+			messageInfo.setRequest(self._helpers.updateParameter(rawRequest, self._helpers.buildParameter("s", self._helpers.base64Encode(minifyFileParam), self.PARAM_URL)))
 		else:
 			self._stdout.println("Already encoded")
