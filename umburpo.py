@@ -33,4 +33,7 @@ class BurpExtender(IBurpExtender, IHttpListener, IParameter):
 
 		params = request.getParameters()
 
-		next(x for x in params if x.getType() == self.PARAM_URL)
+		sParam = next(x for x in params if x.getType() == self.PARAM_URL)
+
+		if not sParam is None:
+			self._stdout.println("We have something" + sParam.getName())
