@@ -31,7 +31,8 @@ class BurpExtender(IBurpExtender, IHttpListener, IParameter):
 
 		self._stdout.println("Lets do it")
 
-		request = self._helpers.analyzeRequest(messageInfo.getRequest())
+		rawRequest = messageInfo.getRequest()
+		request = self._helpers.analyzeRequest(rawRequest)
 
 		params = request.getParameters()
 
@@ -57,3 +58,5 @@ class BurpExtender(IBurpExtender, IHttpListener, IParameter):
 			self._stdout.println("Converting from " + minifyFileParam)
 		else:
 			self._stdout.println("Already encoded")
+
+		self._helpers.updateParameter(rawRequest, self._helpers.buildParameter("s", base64.encodestring(minifyFileParam), self.PARAM_URL))
