@@ -2,9 +2,10 @@
 
 from burp import IBurpExtender
 from burp import IHttpListener
+from burp import IParameter
 from java.io import PrintWriter
 
-class BurpExtender(IBurpExtender, IHttpListener):
+class BurpExtender(IBurpExtender, IHttpListener, IParameter):
 	def registerExtenderCallbacks(self, callbacks):
 		self._callbacks = callbacks
 		self._helpers = callbacks.getHelpers()
@@ -28,3 +29,8 @@ class BurpExtender(IBurpExtender, IHttpListener):
 
 		self._stdout.println("Lets do it")
 
+		request = self._helpers.analyzeRequest(messageInfo.getRequest())
+
+		params = request.getParameters()
+
+		next(x for x in params if x.getType() == self.PARAM_URL)
