@@ -4,6 +4,8 @@ from burp import IBurpExtender
 from burp import IHttpListener
 from burp import IParameter
 from java.io import PrintWriter
+import base64
+import binascii
 
 class BurpExtender(IBurpExtender, IHttpListener, IParameter):
 	def registerExtenderCallbacks(self, callbacks):
@@ -35,5 +37,23 @@ class BurpExtender(IBurpExtender, IHttpListener, IParameter):
 
 		sParam = next(x for x in params if x.getType() == self.PARAM_URL and x.getName() == "s")
 
-		if not sParam is None:
-			self._stdout.println("We have something" + sParam.getName())
+		if sParam is None:
+			self._stdout.println("Param not found")
+			return
+
+		self._stdout.println("Param found")
+
+		minifyFileParam = sParam.getValue()
+		needsB64ing = False
+
+		self._stdout.println("Lets see if we need to encode it")
+
+		try:
+		    base64.decodestring(minifyFileParam)
+		except binascii.Error:
+		    needsB64ing = True
+
+		if needsB64ing:
+			self._stdout.println("Converting from " + minifyFileParam)
+		else:
+			self._stdout.println("Already encoded")
