@@ -23,8 +23,8 @@ class BurpExtender(IBurpExtender, IHttpListener):
 		if not messageIsRequest:
 			return
 
-		if self._callbacks.getToolName(toolFlag) == "Proxy":
+		if toolFlag == self._callbacks.TOOL_PROXY:
 			return
 
-		self.stdout.println("Lets do it")
+		self._stdout.println("Lets do it")
 
