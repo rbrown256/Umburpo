@@ -6,9 +6,13 @@ from burp import IParameter
 from java.io import PrintWriter
 import base64
 import binascii
+import re
+
+BASE64_CHARS = re.compile("^([a-z]|[A-Z]|[0-9]|\+|\/|=)*?$") 
 
 class BurpExtender(IBurpExtender, IHttpListener, IParameter):
-	def registerExtenderCallbacks(self, callbacks):
+        
+        def registerExtenderCallbacks(self, callbacks):
 		self._callbacks = callbacks
 		self._helpers = callbacks.getHelpers()
 
@@ -53,6 +57,11 @@ class BurpExtender(IBurpExtender, IHttpListener, IParameter):
 		    base64.decodestring(minifyFileParam)
 		except binascii.Error:
 		    needsB64ing = True
+
+                is_only_b64 = BASE64_CHARS.match(minifyFileParam)
+
+                if is_only_b64 is None:
+                    needsB64ing = True
 
 		if needsB64ing:
 			self._stdout.println("Converting from " + minifyFileParam)
